@@ -1,6 +1,8 @@
 #include <QMessageBox>
 #include <QTableView>
+#include <QPushButton>
 #include <QLayout>
+
 #include <QVariant>
 #include <QDebug>
 
@@ -30,8 +32,14 @@ TableDlg::TableDlg(QWidget *parent) :
 
     personTable = new QTableView(this);
 
+    addBtn = new QPushButton("&Add", this);
+    QHBoxLayout *btnLayout = new QHBoxLayout();
+    btnLayout->addStretch();
+    btnLayout->addWidget(addBtn);
+
     QVBoxLayout *mainLayout = new QVBoxLayout();
     mainLayout->addWidget(personTable);
+    mainLayout->addLayout(btnLayout);
     setLayout(mainLayout);
 
     setFixedSize(800, 600);
@@ -56,9 +64,15 @@ TableDlg::TableDlg(QWidget *parent) :
 
     personTable->setModel(model);
     personTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    connect(addBtn, SIGNAL(clicked()), SLOT(onAddEntry()));
 }
 
 TableDlg::~TableDlg()
+{
+}
+
+void TableDlg::onAddEntry()
 {
 }
 

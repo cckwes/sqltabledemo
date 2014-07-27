@@ -20,10 +20,12 @@ public:
 signals:
 
 public slots:
+    void onAddEntry();
 
 private:
     QTableView *personTable;
     QSqlRelationalTableModel *model;
+    QPushButton *addBtn;
 };
 
 #endif // TABLEDLG_H
