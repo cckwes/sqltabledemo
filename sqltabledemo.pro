@@ -4,8 +4,10 @@ QT += widgets sql
 
 SOURCES += \
     main.cpp \
-    tabledlg.cpp
+    tabledlg.cpp \
+    addpersondlg.cpp
 
 HEADERS += \
-    tabledlg.h
+    tabledlg.h \
+    addpersondlg.h
 
