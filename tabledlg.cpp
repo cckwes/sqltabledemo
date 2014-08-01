@@ -106,6 +106,7 @@ void TableDlg::onAdded()
         return;
     }
 
+    model->select();
 }
 
 QSqlError TableDlg::initDB()

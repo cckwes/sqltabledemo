@@ -106,12 +106,14 @@ int AddPersonDlg::getAge() const
 
 int AddPersonDlg::getJobID() const
 {
-    return jobCombo->currentIndex();
+    QModelIndex itemIndex = jobModel->index(jobCombo->currentIndex(), 0);
+    return jobModel->data(itemIndex).toInt();
 }
 
 int AddPersonDlg::getDeptID() const
 {
-    return deptCombo->currentIndex();
+    QModelIndex itemIndex = deptModel->index(deptCombo->currentIndex(), 0);
+    return deptModel->data(itemIndex).toInt();
 }
 
 void AddPersonDlg::connectSS()
@@ -124,7 +126,7 @@ void AddPersonDlg::onSubmit()
 {
     if (!nameEdit->text().isEmpty() && !ageEdit->text().isEmpty() && (jobCombo->currentIndex() != -1) && (deptCombo->currentIndex() != -1))
     {
-        if (QMessageBox::question(this, "Confirmation", "Confirm adding this entry to database?", QMessageBox::Yes, QMessageBox::No))
+        if (QMessageBox::question(this, "Confirmation", "Confirm adding this entry to database?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
         {
             emit accepted();
             this->close();
