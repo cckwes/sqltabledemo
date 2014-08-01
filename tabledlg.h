@@ -7,6 +7,7 @@
 
 class QTableView;
 class QSqlRelationalTableModel;
+class AddPersonDlg;
 
 class TableDlg : public QDialog
 {
@@ -21,11 +22,13 @@ signals:
 
 public slots:
     void onAddEntry();
+    void onAdded();
 
 private:
     QTableView *personTable;
     QSqlRelationalTableModel *model;
     QPushButton *addBtn;
+    AddPersonDlg *addDlg;
 };
 
 #endif // TABLEDLG_H

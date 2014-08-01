@@ -10,6 +10,7 @@
 #include <QSqlQuery>
 #include <QSqlRelationalTableModel>
 
+#include "addpersondlg.h"
 #include "tabledlg.h"
 
 TableDlg::TableDlg(QWidget *parent) :
@@ -60,12 +61,15 @@ TableDlg::TableDlg(QWidget *parent) :
     model->setHeaderData(deptIdx, Qt::Horizontal, "Department");
 
     if (!model->select())
-        qDebug() << model->lastError();
+        qDebug() << model->lastError().text();
 
     personTable->setModel(model);
     personTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
+    addDlg = new AddPersonDlg(this);
+
     connect(addBtn, SIGNAL(clicked()), SLOT(onAddEntry()));
+    connect(addDlg, SIGNAL(accepted()), SLOT(onAdded()));
 }
 
 TableDlg::~TableDlg()
@@ -74,6 +78,34 @@ TableDlg::~TableDlg()
 
 void TableDlg::onAddEntry()
 {
+    addDlg->clearEntries();
+    addDlg->exec();
+}
+
+void TableDlg::onAdded()
+{
+    QSqlQuery q;
+
+    //won't insert any field checking here as the dialog should have check the
+    //entries before accepted
+
+    if (!q.prepare(QLatin1String("insert into person(name, age, job, department) values(?, ?, ?, ?)")))
+    {
+        qDebug() << "Database error while prepare for insertion: " << q.lastError().text();
+        return;
+    }
+
+    q.addBindValue(addDlg->getName());
+    q.addBindValue(addDlg->getAge());
+    q.addBindValue(addDlg->getJobID());
+    q.addBindValue(addDlg->getDeptID());
+
+    if (!q.exec())
+    {
+        qDebug() << "Database error when insertion: " << q.lastError().text();
+        return;
+    }
+
 }
 
 QSqlError TableDlg::initDB()
