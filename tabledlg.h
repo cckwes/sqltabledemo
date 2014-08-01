@@ -23,11 +23,14 @@ signals:
 public slots:
     void onAddEntry();
     void onAdded();
+    void onRemoveEntry();
 
 private:
     QTableView *personTable;
     QSqlRelationalTableModel *model;
     QPushButton *addBtn;
+    QPushButton *removeBtn;
+
     AddPersonDlg *addDlg;
 };
 

@@ -32,11 +32,16 @@ TableDlg::TableDlg(QWidget *parent) :
     }
 
     personTable = new QTableView(this);
+    personTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    personTable->setSelectionMode(QAbstractItemView::SingleSelection);
 
     addBtn = new QPushButton("&Add", this);
+    removeBtn = new QPushButton("&Remove", this);
     QHBoxLayout *btnLayout = new QHBoxLayout();
     btnLayout->addStretch();
     btnLayout->addWidget(addBtn);
+    btnLayout->addSpacing(10);
+    btnLayout->addWidget(removeBtn);
 
     QVBoxLayout *mainLayout = new QVBoxLayout();
     mainLayout->addWidget(personTable);
@@ -70,6 +75,7 @@ TableDlg::TableDlg(QWidget *parent) :
 
     connect(addBtn, SIGNAL(clicked()), SLOT(onAddEntry()));
     connect(addDlg, SIGNAL(accepted()), SLOT(onAdded()));
+    connect(removeBtn, SIGNAL(clicked()), SLOT(onRemoveEntry()));
 }
 
 TableDlg::~TableDlg()
@@ -107,6 +113,33 @@ void TableDlg::onAdded()
     }
 
     model->select();
+}
+
+void TableDlg::onRemoveEntry()
+{
+    if (personTable->selectionModel()->selectedRows().size() != 1)
+    {
+        qDebug() << "Selection size: " << personTable->selectionModel()->selectedRows().size();
+        return;
+    }
+
+    if (QMessageBox::question(this, "Remove", "Confirm Removal", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
+    {
+        QModelIndex selectedIndex = personTable->selectionModel()->selectedRows().at(0);
+
+        int removingId = model->data(selectedIndex).toInt();
+
+        QSqlQuery q;
+
+        if (!q.exec("delete from `person` where `id` = '" + QString::number(removingId) + "'"))
+        {
+            qDebug() << "Failed to remove the selected entry from database: " << q.lastError().text();
+        }
+        else
+        {
+            model->select();
+        }
+    }
 }
 
 QSqlError TableDlg::initDB()
